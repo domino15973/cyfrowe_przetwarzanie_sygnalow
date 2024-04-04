@@ -14,7 +14,6 @@ z = [z12, z34, np.conj(z12), np.conj(z34)]
 
 # współczynnik wzmocnienia (z wykładu)
 wzm = 0.42
-# dla wartości wzm = 1 amplituda to około 2.3
 
 plt.figure(figsize=(8, 6))
 plt.plot(np.real(p), np.imag(p), "*", label="Bieguny")

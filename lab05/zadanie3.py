@@ -49,7 +49,7 @@ for response, label in zip(
         [frequency_response_butter, frequency_response_cheby1, frequency_response_cheby2, frequency_response_ellip],
         ["Butterworth", "Czebyszew 1", "Czebyszew 2", "Eliptyczny"]):
     plt.plot(w / (2 * np.pi * 1e3), 20 * np.log10(np.abs(response[1]) + 1e-12), label=label)
-plt.axis([0, 256, -40, 5])
+plt.axis()
 plt.grid(True)
 plt.title("Odpowiedź częstotliwościowa modelów")
 plt.xlabel("Częstotliwość (kHz)")
