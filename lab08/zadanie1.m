@@ -10,10 +10,10 @@ fc = 200;                           % częstotliwość nośna
 M  = 64;                            % połowa długości filtra
 N  = 2*M+1;
 n  = 1:M;
-h  = (2/pi)*sin(pi*n/2).^2 ./n;     % połowa odpowiedzi impulsowej
+h  = (2/pi)*sin(pi*n/2).^2 ./n;     % połowa odpowiedzi impulsowej (teoretyczna odpowiedź impulsowa)
 h  = [-h(M:-1:1) 0 h(1:M)];         % cała odpowiedź dla n = -M,...,0,...,M
 
-%% Wymnażanie przez okno Blackmana (w celu zmniejszenia wycieku widma)
+%% Wymnażanie przez okno Blackmana (w celu zmniejszenia wycieku widma i poprawienia charakterystyki filtru)
 w  = blackman(N); 
 w  = w';            
 hw = h.*w;                          % wymnożenie odpowiedzi impulsowej z oknem
@@ -22,25 +22,25 @@ hw = h.*w;                          % wymnożenie odpowiedzi impulsowej z oknem
 m = -M : 1 : M;                     % dla filtra nieprzyczynowego (bez przesunięcia o M próbek w prawo)
 % m = 0 : N-1;                      % dla filtra przyczynowego (z przesunięciem o M próbek w prawo)
 NF = 500; 
-fn=0.5*(1:NF-1)/NF;
+fn=0.5*(1:NF-1)/NF;                 % normalizowane częstotliwości
 for k=1:NF-1
-    H(k)  = sum (h  .* exp(-1i*2*pi*fn(k)*m));
-    HW(k) = sum (hw .* exp(-1i*2*pi*fn(k)*m));
+    H(k)  = sum (h  .* exp(-1i*2*pi*fn(k)*m));      % transformata Fouriera dla oryginalnej odpowiedzi impulsowej
+    HW(k) = sum (hw .* exp(-1i*2*pi*fn(k)*m));      % transformata Fouriera dla odpowiedzi impulsowej po wymnożeniu przez okno Blackmana
 end
 
 figure(1);
 set(figure(1),'units','points');
 subplot(2,2,1);
-stem(m,h); grid; title('h(n)'); xlabel('n');
+stem(m,h); grid; title('h(n)'); xlabel('n');                    % Wykres oryginalnej odpowiedzi impulsowej     
 subplot(2,2,2);
-stem(m,hw); grid; title('hw(n)'); xlabel('n'); 
+stem(m,hw); grid; title('hw(n)'); xlabel('n');                  % Wykres odpowiedzi impulsowej po wymnożeniu przez okno Blackmana
 subplot(2,2,3);
-plot(fn,abs(H)); grid; title('|H(fn)|'); xlabel('f norm]'); 
+plot(fn,abs(H)); grid; title('|H(fn)|'); xlabel('f norm]');     % Wykres widma Fouriera dla oryginalnej odpowiedzi impulsowej
 subplot(2,2,4);
-plot(fn,abs(HW)); grid; title('|HW(fn)|'); xlabel('f norm]');
+plot(fn,abs(HW)); grid; title('|HW(fn)|'); xlabel('f norm]');   % Wykres widma Fouriera dla odpowiedzi impulsowej po wymnożeniu przez okno Blackmana
 
 %% Porównanie z funkcją hilbert() matlaba
-HT = hilbert(x);
+HT = hilbert(x);    % Obliczenie transformacji Hilberta sygnału x
 
 %% Filtracja odpowiedzią impulsową
 xHT = conv(x,hw);           % filtracja sygnału x(n) za pomocą odp. impulsowej hw(n); otrzymujemy Nx+N-1 próbek
@@ -76,8 +76,8 @@ if(0)
     f1 = locs(1); f2=locs(2); f3=locs(3);
     A1 = pks(1);  A2=pks(2);  A3=pks(3);
 else
-    f1=6;   f2=60;   f3=90;
-    A1=0.2; A2=0.33; A3=0.57;
+    f1=7;   f2=20;  f3=30;
+    A1=0.3; A2=0.1; A3=0.5;
 end
 
 %% Sygnał modulujący amplitudę mr(t) - suma trzech sygnałów
