@@ -2,12 +2,12 @@
 clear all; close all; clc;
 
 %% Parametry
-K = 3; % Rząd nad-próbkowania (interpolacja)
-L = 2; % Rząd pod-próbkowania (decymacja)
+K = 2; % Rząd nad-próbkowania (interpolacja)
+L = 3; % Rząd pod-próbkowania (decymacja)
 
-Nx = 1000;
+Nx = 1000; % Liczba próbek
 x = sin(2*pi*(0:Nx-1)/100); % Generacja sygnału wejściowego
-% [x, fs] = audioread('mowa.wav'); x = x(:,1)'; Nx = length(x); 
+[x, fs] = audioread('ukulele.wav'); x = x(:,1)'; Nx = length(x); 
 
 % Korekta długości dla filtracji polifazowej
 R = rem(Nx, K); x = x(1:end-R); Nx = Nx - R;
@@ -21,7 +21,7 @@ if 1/K < 1/L - 0.1*(1/L)
     chosen_filter = h_interp;
     filter_type = 'interpolujący';
 else
-    chosen_filter = g_decim;
+    chosen_filter = g_decim * K;
     filter_type = 'decymatora';
 end
 
