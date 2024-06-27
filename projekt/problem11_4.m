@@ -1,4 +1,4 @@
-%% Demodulacja AM oraz FM syganłu z użyciem filtra Hilberta
+%% Demodulacja AM oraz FM sygnału z użyciem filtra Hilberta
 clear all; close all; clc;
 
 %% Parametry sygnału
@@ -79,10 +79,11 @@ ylabel('Częstotliwość (Hz)');
 grid on;
 
 %% Implementacja filtra Hilberta w postaci cyfrowej FIR
-M = 50; % Połowa długości filtra
+M = 40; % Połowa długości filtra
 n = -M:M; % Oś próbkowania
 hH = (1 - cos(pi * n)) ./ (pi * n); % Odpowiedź impulsowa
 hH(M+1) = 0; % Ustawienie wartości w zerze na 0
+% window = chebwin(2*M+1, 100); % Okno Chebysheva
 window = blackman(2*M+1); % Okno Blackmana
 hH = hH .* window'; % Filtr z oknem
 
@@ -112,4 +113,58 @@ plot(f, angle(H));
 title('Charakterystyka fazowa filtra Hilberta');
 xlabel('Częstotliwość (Hz)');
 ylabel('Faza (radiany)');
+grid on;
+
+%% Demodulacja za pomocą filtra FIR Hilberta
+xa_fir = x + 1i * y; % Sygnał analityczny z filtra FIR Hilberta
+
+% Odtworzenie amplitudy i fazy
+xA_est_fir = abs(xa_fir);
+ang_fir = unwrap(angle(xa_fir));
+xF_est_fir = (1/(2*pi)) * (diff(ang_fir) / dt);
+xF_est_fir = [xF_est_fir, xF_est_fir(end)];
+
+% Rysowanie wyników demodulacji za pomocą filtra FIR Hilberta
+figure;
+subplot(3,1,1);
+plot(t, x);
+title('Zmodulowany sygnał x(t) z użyciem filtra FIR Hilberta');
+xlabel('Czas (s)');
+ylabel('Amplituda');
+grid on;
+
+subplot(3,1,2);
+plot(t, xA, 'r', t, xA_est_fir, 'b--');
+title('Demodulacja AM z użyciem filtra FIR Hilberta');
+xlabel('Czas (s)');
+ylabel('Amplituda');
+legend('Oryginał', 'Oszacowany');
+grid on;
+
+subplot(3,1,3);
+plot(t, xF, 'r', t, xF_est_fir - fc, 'b--');
+title('Demodulacja FM z użyciem filtra FIR Hilberta');
+xlabel('Czas (s)');
+ylabel('Częstotliwość (Hz)');
+legend('Oryginał', 'Oszacowany');
+grid on;
+
+%% Obliczanie błędów demodulacji dla filtra FIR Hilberta
+error_AM_fir = xA - xA_est_fir;
+error_FM_fir = xF - (xF_est_fir - fc);
+
+% Rysowanie błędów demodulacji dla filtra FIR Hilberta
+figure;
+subplot(2,1,1);
+plot(t, error_AM_fir);
+title('Błąd demodulacji AM z użyciem filtra FIR Hilberta');
+xlabel('Czas (s)');
+ylabel('Amplituda');
+grid on;
+
+subplot(2,1,2);
+plot(t, error_FM_fir);
+title('Błąd demodulacji FM z użyciem filtra FIR Hilberta');
+xlabel('Czas (s)');
+ylabel('Częstotliwość (Hz)');
 grid on;
