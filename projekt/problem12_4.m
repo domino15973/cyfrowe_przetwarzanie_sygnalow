@@ -4,7 +4,7 @@ clear all; close all; clc;
 %% Parametry
 Nx = 1000; % liczba próbek
 M = 2; % rząd filtra (liczba wag)
-lambda_vals = [0.999, 0.99, 0.95, 0.9]; % różne wartości parametru lambda
+lambda_vals = [0.999, 0.99, 0.95, 0.9]; % różne wartości parametru lambda (parametr "zapominania")
 
 %% Generacja sygnału wejściowego
 x = randn(1, Nx); % szum gaussowski

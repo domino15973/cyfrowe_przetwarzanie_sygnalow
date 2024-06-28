@@ -119,10 +119,10 @@ grid on;
 xa_fir = x + 1i * y; % Sygnał analityczny z filtra FIR Hilberta
 
 % Odtworzenie amplitudy i fazy
-xA_est_fir = abs(xa_fir);
-ang_fir = unwrap(angle(xa_fir));
-xF_est_fir = (1/(2*pi)) * (diff(ang_fir) / dt);
-xF_est_fir = [xF_est_fir, xF_est_fir(end)];
+xA_est_fir = abs(xa_fir); % Odtworzenie amplitudy
+ang_fir = unwrap(angle(xa_fir)); % Odtworzenie kąta fazowego
+xF_est_fir = (1/(2*pi)) * (diff(ang_fir) / dt); % Obliczenie chwilowej częstotliwości
+xF_est_fir = [xF_est_fir, xF_est_fir(end)]; % Dopasowanie rozmiarów wektorów
 
 % Rysowanie wyników demodulacji za pomocą filtra FIR Hilberta
 figure;
